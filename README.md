@@ -12,7 +12,7 @@
 </p>
 
 <p align="center">
-  <img src="https://your-app-screenshot-url.com/screenshot.png" alt="Master-Chef App Screenshot" width="300" />
+  <img src="WhatsApp Image 2024-10-17 at 05.07.56_e95cfd37.jpg" alt="Master-Chef App Screenshot" width="300" />
 </p>
 
 <h2>🚀 Features</h2>
