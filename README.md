@@ -11,9 +11,6 @@
   <img src="https://img.shields.io/github/license/ManmohanBoyina/master-chef" alt="License" />
 </p>
 
-<p align="center">
-  <img src="WhatsApp Image 2024-10-17 at 05.07.56_e95cfd37.jpg" alt="Master-Chef App Screenshot" width="300" />
-</p>
 
 <h2>🚀 Features</h2>
 <ul>
@@ -41,9 +38,8 @@ npm run start
 
 <h2>📸 Screenshots</h2>
 <p align="center">
+  <img src="WhatsApp Image 2024-10-17 at 05.07.56_e95cfd37.jpg" alt="Screen 2" width="200" />
   <img src="WhatsApp Image 2024-10-17 at 05.07.55_1903fae0.jpg" alt="Screen 1" width="200" />
-  <img src="https://your-app-screenshot-url.com/screenshot2.png" alt="Screen 2" width="200" />
-  <img src="https://your-app-screenshot-url.com/screenshot3.png" alt="Screen 3" width="200" />
 </p>
 
 <h2>🌍 License</h2>
