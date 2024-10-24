@@ -6,8 +6,9 @@ import {
   TouchableOpacity,
   ActivityIndicator,
   ImageBackground,
+  Animated,
 } from "react-native";
-import React from "react";
+import React, { useRef, useEffect } from "react";
 import { Formik } from "formik";
 import * as Yup from "yup";
 import { useRouter } from "expo-router";
@@ -29,13 +30,35 @@ const validationSchema = Yup.object().shape({
 
 const Login = () => {
   const router = useRouter();
-
+  const scrollAnim = useRef(new Animated.Value(0)).current; // Scrolling animation value
   const mutation = useMutation({
     mutationFn: loginUser,
     mutationKey: ["login"],
   });
   const dispatch = useDispatch();
   useSelector((state) => console.log("Store Data", state));
+
+  useEffect(() => {
+    if (mutation?.isLoading) {
+      // Start the scrolling animation when loading begins
+      Animated.loop(
+        Animated.sequence([
+          Animated.timing(scrollAnim, {
+            toValue: 10, // Move the button a little to the right
+            duration: 500,
+            useNativeDriver: true,
+          }),
+          Animated.timing(scrollAnim, {
+            toValue: -10, // Move the button a little to the left
+            duration: 500,
+            useNativeDriver: true,
+          }),
+        ])
+      ).start();
+    } else {
+      scrollAnim.setValue(0); // Reset the button position after loading finishes
+    }
+  }, [mutation?.isLoading]);
 
   return (
     <ImageBackground
@@ -110,13 +133,22 @@ const Login = () => {
                 <Text style={styles.errorText}>{errors.password}</Text>
               )}
 
-              <TouchableOpacity style={styles.button} onPress={handleSubmit}>
-                {mutation?.isLoading ? (
-                  <ActivityIndicator color="#fff" />
-                ) : (
-                  <Text style={styles.buttonText}>Login</Text>
-                )}
-              </TouchableOpacity>
+              <Animated.View
+                style={[
+                  styles.buttonContainer,
+                  {
+                    transform: [{ translateX: scrollAnim }],
+                  },
+                ]}
+              >
+                <TouchableOpacity style={styles.button} onPress={handleSubmit}>
+                  {mutation?.isLoading ? (
+                    <ActivityIndicator color="#fff" />
+                  ) : (
+                    <Text style={styles.buttonText}>Login</Text>
+                  )}
+                </TouchableOpacity>
+              </Animated.View>
             </View>
           )}
         </Formik>
@@ -180,13 +212,15 @@ const styles = StyleSheet.create({
     fontSize: 14,
     textAlign: "center",
   },
+  buttonContainer: {
+    marginTop: 16,
+  },
   button: {
     height: 50,
     backgroundColor: "#6200ea",
     justifyContent: "center",
     alignItems: "center",
     borderRadius: 10,
-    marginTop: 16,
     elevation: 3,
   },
   buttonText: {
