@@ -1,22 +1,22 @@
 import { Tabs } from "expo-router";
 import { FontAwesome } from "@expo/vector-icons";
 import ProtectedRoute from "../../components/ProtectedRoute";
+import Foundation from '@expo/vector-icons/Foundation';
 export default function RootLayout() {
   return (
     <ProtectedRoute>
       <Tabs
-        screenOptions={{
-          headerShown: false, // This will hide the header for all tabs
-        }}
+      screenOptions={{
+        headerShown: false,  // Globally hides headers for all screens in Tabs
+      }}
       >
         <Tabs.Screen
           name="index"
           options={{
             headerShown: false,
-
             title: "Home",
             tabBarIcon: ({ color }) => (
-              <FontAwesome size={28} name="home" color={color} />
+              <Foundation name="home" size={28} color="black" />
             ),
           }}
         />
@@ -27,7 +27,17 @@ export default function RootLayout() {
           options={{
             title: "Add",
             tabBarIcon: ({ color }) => (
-              <FontAwesome size={28} name="plus" color={color} />
+              <Foundation name="plus" size={28} color="black" />
+            ),
+            headerShown: false,
+          }}
+        />
+      <Tabs.Screen
+          name="UserRecipes"
+          options={{
+            title: "My Recipes",
+            tabBarIcon: ({ color }) => (
+              <Foundation name="clipboard-notes" size={28} color="black" />
             ),
             headerShown: false,
           }}
@@ -37,7 +47,7 @@ export default function RootLayout() {
           options={{
             title: "Profile",
             tabBarIcon: ({ color }) => (
-              <FontAwesome size={28} name="user" color={color} />
+              <FontAwesome size={28} name="user" color="black"/>
             ),
             headerShown: false,
           }}

@@ -4,7 +4,7 @@ import axios from "axios";
 const loginUser = async ({ email, password }) => {
   try {
     const response = await axios.post(
-      "https://olive-tigers-shine.loca.lt/api/users/login",
+      "https://brave-boxes-enjoy.loca.lt/api/users/login",
       {
         email,
         password,
@@ -30,7 +30,7 @@ const loginUser = async ({ email, password }) => {
 const registerUser = async ({ email, password }) => {
   try {
     const response = await axios.post(
-      "https://olive-tigers-shine.loca.lt/api/users/register",
+      "https://brave-boxes-enjoy.loca.lt/api/users/register",
       {
         email,
         password,
