@@ -46,7 +46,3 @@ npm run start
   <img src="photo_2024-10-30_19-48-36.jpg" alt="Screen 6" width="120" />
 </p>
 
-<h2>🌍 License</h2>
-<p>
-  This project is licensed under the MIT License - see the <a href="https://github.com/your-username/master-chef/blob/main/LICENSE">LICENSE</a> file for details.
-</p>
