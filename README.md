@@ -22,7 +22,7 @@
 <h2>🛠️ Installation</h2>
 <h3>Frontend</h3>
 <pre>
-git clone https://github.com/your-username/master-chef.git
+git clone https://github.com/ManmohanBoyina/master-chef.git
 cd master-chef
 cd MasterChef
 npm install
