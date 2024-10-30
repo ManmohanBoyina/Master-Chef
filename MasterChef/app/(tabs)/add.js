@@ -8,6 +8,7 @@ import {
   Alert,
 } from "react-native";
 import React, { useState } from "react";
+import { useSelector } from "react-redux"; // Import useSelector to access Redux state
 
 const AddRecipe = () => {
   // State variables to store form inputs
@@ -15,6 +16,9 @@ const AddRecipe = () => {
   const [ingredients, setIngredients] = useState("");
   const [imageUrl, setImageUrl] = useState("");
   const [instructions, setInstructions] = useState("");
+
+  // Retrieve the logged-in user's email from the Redux store
+  const userEmail = useSelector((state) => state.auth.user?.email);
 
   // Function to handle adding recipe
   const addRecipeToDatabase = async () => {
@@ -30,10 +34,11 @@ const AddRecipe = () => {
       ingredientLines: ingredients.split(","), // Split ingredients by commas
       imageUrl, // Use imageUrl as expected by the back-end
       instructions, // Consistent with the schema field
+      email: userEmail, // Automatically add the user's email
     };
 
     try {
-      const response = await fetch("https://olive-tigers-shine.loca.lt/api/recipe/recipe", {
+      const response = await fetch("https://brave-boxes-enjoy.loca.lt/api/recipe/recipe", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

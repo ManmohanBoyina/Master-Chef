@@ -67,7 +67,7 @@ import {
     // Function to render each recipe
     const renderRecipeItem = ({ item }) => (
       <TouchableOpacity
-        onPress={() => navigation.navigate("Details", { data: { recipe: item } })} // Wrap item in the 'recipe' key under 'data'
+        onPress={() => navigation.navigate("Screens/Details", { data: { recipe: item } })} // Wrap item in the 'recipe' key under 'data'
       >
         <View style={styles.recipeItem}>
           <Image source={{ uri: item.image }} style={styles.recipeImage} />
