@@ -40,6 +40,10 @@ npm run start
 <p align="center">
   <img src="WhatsApp Image 2024-10-17 at 05.07.56_e95cfd37.jpg" alt="Screen 2" width="200" />
   <img src="WhatsApp Image 2024-10-17 at 05.07.55_1903fae0.jpg" alt="Screen 1" width="200" />
+  <img src="photo_2024-10-30_19-48-17.jpg" alt="Screen 1" width="200" />
+  <img src="photo_2024-10-30_19-48-28.jpg" alt="Screen 1" width="200" />
+  <img src="photo_2024-10-30_19-48-33.jpg" alt="Screen 1" width="200" />
+  <img src="photo_2024-10-30_19-48-36.jpg" alt="Screen 1" width="200" />
 </p>
 
 <h2>🌍 License</h2>
