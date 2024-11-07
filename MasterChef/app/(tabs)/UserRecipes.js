@@ -23,7 +23,7 @@ const UserRecipes = () => {
   const fetchUserRecipes = async () => {
     try {
       const response = await fetch(
-        `https://brave-boxes-enjoy.loca.lt/api/recipe/getrecipe?email=${encodeURIComponent(userEmail)}`
+        `https://chilly-streets-wear.loca.lt/api/recipe/getrecipe?email=${encodeURIComponent(userEmail)}`
       );
       const data = await response.json();
 

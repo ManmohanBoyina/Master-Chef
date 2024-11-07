@@ -109,7 +109,7 @@ const Index = () => {
           showsHorizontalScrollIndicator={false}
           renderItem={({ item }) => {
             return (
-              <TouchableOpacity activeOpacity={0.8} style={styles.categoryItem}>
+              <TouchableOpacity activeOpacity={0.8} style={styles.categoryItem} onPress={() => Navigation.navigate("Screens/RecipeByCategory",{ category: item.title })}>
                 <View style={styles.categoryContainer}>
                   <Image source={item.icon} style={styles.categoryImage} />
                   <Text style={styles.categoryText}>{item.title}</Text>

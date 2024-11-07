@@ -38,7 +38,7 @@ const AddRecipe = () => {
     };
 
     try {
-      const response = await fetch("https://brave-boxes-enjoy.loca.lt/api/recipe/recipe", {
+      const response = await fetch("https://silent-clocks-invite.loca.lt/api/recipe/recipe", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
