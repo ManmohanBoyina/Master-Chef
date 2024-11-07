@@ -12,6 +12,7 @@ import {
 import Svg, { Path } from "react-native-svg";
 import { MEAL_FILTERS } from "./Data"; // Assuming MEAL_FILTERS contains the new structure
 import { useNavigation } from "expo-router";
+import Search from "../Screens/Search"
 
 const Index = () => {
   const Navigation = useNavigation();
@@ -21,7 +22,7 @@ const Index = () => {
     getTrendyRecipes();
   }, []);
   const handleSearchPress = () => {
-    Navigation.navigate("Search"); // Navigate to the 'SSearch' screen
+    Navigation.navigate("Screens/Search"); // Navigate to the 'SSearch' screen
   };
 
   const getTrendyRecipes = () => {
@@ -71,7 +72,7 @@ const Index = () => {
 
   return (
     <View style={styles.container}>
-      <StatusBar barStyle={"light-content"} />
+      <StatusBar barStyle={"dark-content"} />
       <View style={styles.topView}>
         <Image
           source={{
@@ -108,7 +109,7 @@ const Index = () => {
           showsHorizontalScrollIndicator={false}
           renderItem={({ item }) => {
             return (
-              <TouchableOpacity activeOpacity={0.8} style={styles.categoryItem}>
+              <TouchableOpacity activeOpacity={0.8} style={styles.categoryItem} onPress={() => Navigation.navigate("Screens/RecipeByCategory",{ category: item.title })}>
                 <View style={styles.categoryContainer}>
                   <Image source={item.icon} style={styles.categoryImage} />
                   <Text style={styles.categoryText}>{item.title}</Text>
@@ -131,7 +132,7 @@ const Index = () => {
               <TouchableOpacity
                 style={styles.recipeItem}
                 onPress={() => {
-                  Navigation.navigate("Details", {
+                  Navigation.navigate("Screens/Details", {
                     data: item,
                   });
                 }}

@@ -1,45 +1,55 @@
 import { Tabs } from "expo-router";
-import { FontAwesome } from "@expo/vector-icons";
+import { Ionicons } from "@expo/vector-icons";
 import ProtectedRoute from "../../components/ProtectedRoute";
+import { useNavigation } from "expo-router";
+
 export default function RootLayout() {
   return (
     <ProtectedRoute>
       <Tabs
         screenOptions={{
-          headerShown: false, // This will hide the header for all tabs
+          headerShown: false,  // Globally hides headers for all screens in Tabs
+          tabBarActiveTintColor: "#0056B3", // Active icon color (e.g., a bright blue)
+          tabBarInactiveTintColor: "#9e9e9e", // Inactive icon color (e.g., gray)
         }}
       >
         <Tabs.Screen
           name="index"
           options={{
-            headerShown: false,
-
             title: "Home",
             tabBarIcon: ({ color }) => (
-              <FontAwesome size={28} name="home" color={color} />
+              <Ionicons name="home-outline" size={28} color={color} />
             ),
           }}
         />
-        {/* profile */}
-
+        
         <Tabs.Screen
           name="add"
           options={{
             title: "Add",
             tabBarIcon: ({ color }) => (
-              <FontAwesome size={28} name="plus" color={color} />
+              <Ionicons name="add-circle-outline" size={28} color={color} />
             ),
-            headerShown: false,
           }}
         />
+        
+        <Tabs.Screen
+          name="UserRecipes"
+          options={{
+            title: "My Recipes",
+            tabBarIcon: ({ color }) => (
+              <Ionicons name="book-outline" size={28} color={color} />
+            ),
+          }}
+        />
+        
         <Tabs.Screen
           name="settings"
           options={{
             title: "Profile",
             tabBarIcon: ({ color }) => (
-              <FontAwesome size={28} name="user" color={color} />
+              <Ionicons name="person-outline" size={28} color={color} />
             ),
-            headerShown: false,
           }}
         />
       </Tabs>

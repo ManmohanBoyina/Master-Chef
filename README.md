@@ -11,7 +11,6 @@
   <img src="https://img.shields.io/github/license/ManmohanBoyina/master-chef" alt="License" />
 </p>
 
-
 <h2>🚀 Features</h2>
 <ul>
   <li>🔍 Search for recipes from various cuisines around the world</li>
@@ -21,11 +20,23 @@
 </ul>
 
 <h2>🛠️ Installation</h2>
+<h3>Frontend</h3>
 <pre>
-git clone https://github.com/your-username/master-chef.git
+git clone https://github.com/ManmohanBoyina/master-chef.git
 cd master-chef
+cd MasterChef
 npm install
-npm run start
+npm expo start
+</pre>
+
+<h3>Backend</h3>
+<pre>
+git clone https://github.com/ManmohanBoyina/BackendAPP.git
+npm install
+node --waatch app
+Install localtunnel extension in the VS code
+open a new terminal in VS code parallely
+npx localtunnel --port 8000
 </pre>
 
 <h2>📱 Technologies Used</h2>
@@ -34,15 +45,16 @@ npm run start
   <li><b>Expo</b> - React Native development environment</li>
   <li><b>Axios</b> - To fetch recipes from the API</li>
   <li><b>React Navigation</b> - Seamless navigation in the app</li>
+  <li><b>Node.js & Express</b> - Backend framework for REST API</li>
+  <li><b>MongoDB</b> - Database to store recipes and user data</li>
 </ul>
 
 <h2>📸 Screenshots</h2>
 <p align="center">
-  <img src="WhatsApp Image 2024-10-17 at 05.07.56_e95cfd37.jpg" alt="Screen 2" width="200" />
-  <img src="WhatsApp Image 2024-10-17 at 05.07.55_1903fae0.jpg" alt="Screen 1" width="200" />
-</p>
-
-<h2>🌍 License</h2>
-<p>
-  This project is licensed under the MIT License - see the <a href="https://github.com/your-username/master-chef/blob/main/LICENSE">LICENSE</a> file for details.
+  <img src="WhatsApp Image 2024-10-17 at 05.07.56_e95cfd37.jpg" alt="Screen 2" width="120" />
+  <img src="WhatsApp Image 2024-10-17 at 05.07.55_1903fae0.jpg" alt="Screen 1" width="120" />
+  <img src="photo_2024-10-30_19-48-17.jpg" alt="Screen 3" width="120" />
+  <img src="photo_2024-10-30_19-48-28.jpg" alt="Screen 4" width="120" />
+  <img src="photo_2024-10-30_19-48-33.jpg" alt="Screen 5" width="120" />
+  <img src="photo_2024-10-30_19-48-36.jpg" alt="Screen 6" width="120" />
 </p>
