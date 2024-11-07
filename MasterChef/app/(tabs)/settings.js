@@ -1,20 +1,41 @@
-import React from "react";
-import { StyleSheet, Text, View, TouchableOpacity } from "react-native";
+import React, { useState } from "react";
+import { StyleSheet, Text, View, TouchableOpacity, Switch } from "react-native";
 import Icon from "react-native-vector-icons/FontAwesome";
 import { useDispatch, useSelector } from "react-redux";
 import { logoutUserAction } from "../(redux)/authSlice";
-import { useRouter } from "expo-router"; // If using Expo Router, use this
+import { useRouter } from "expo-router";
 import ProtectedRoute from "../../components/ProtectedRoute";
 import { useNavigation } from "expo-router";
+import {
+  requestNotificationPermission,
+  scheduleRandomNotifications,
+  cancelNotifications,
+} from "../services/Notification"; // Import notification service functions
+
 const Settings = () => {
   const dispatch = useDispatch();
-  const router = useRouter(); // Initialize router for navigation
-  const user = useSelector((state) => state.auth.user);
+  const router = useRouter();
   const Navigation = useNavigation();
+  const [isNotificationsEnabled, setIsNotificationsEnabled] = useState(false);
+
+  const handleToggleNotifications = async () => {
+    setIsNotificationsEnabled((previousState) => !previousState);
+    
+    if (!isNotificationsEnabled) {
+      // Enable notifications
+      const permissionGranted = await requestNotificationPermission();
+      if (permissionGranted) {
+        scheduleRandomNotifications();
+      }
+    } else {
+      // Disable notifications
+      cancelNotifications();
+    }
+  };  
 
   const handleLogout = async () => {
-    await dispatch(logoutUserAction()); // Await if logoutUserAction is async
-    router.push("/auth/login"); // Redirect to login screen after logout
+    await dispatch(logoutUserAction());
+    router.push("/auth/login");
   };
 
   return (
@@ -24,58 +45,43 @@ const Settings = () => {
         <View style={styles.section}>
           <TouchableOpacity
             style={styles.option}
-            onPress={() => {
-              Navigation.navigate("Screens/UserProfile");
-            }}
+            onPress={() => Navigation.navigate("Screens/UserProfile")}
           >
             <Icon name="user" size={24} color="#4caf50" />
             <Text style={styles.optionText}>Account</Text>
-            <Icon
-              name="angle-right"
-              size={24}
-              color="#999"
-              style={styles.optionIcon}
-            />
+            <Icon name="angle-right" size={24} color="#999" style={styles.optionIcon} />
           </TouchableOpacity>
-          <TouchableOpacity style={styles.option}>
+
+          {/* Notifications Toggle */}
+          <View style={styles.option}>
             <Icon name="bell" size={24} color="#ff9800" />
             <Text style={styles.optionText}>Notifications</Text>
-            <Icon
-              name="angle-right"
-              size={24}
-              color="#999"
-              style={styles.optionIcon}
+            <Switch
+              trackColor={{ false: "#767577", true: "#ff9800" }}
+              thumbColor={isNotificationsEnabled ? "#fff" : "#fff"}
+              ios_backgroundColor="#3e3e3e"
+              onValueChange={handleToggleNotifications}
+              value={isNotificationsEnabled}
+              style={styles.switch}
             />
-          </TouchableOpacity>
+          </View>
+
           <TouchableOpacity style={styles.option}>
             <Icon name="lock" size={24} color="#f44336" />
             <Text style={styles.optionText}>Payment</Text>
-            <Icon
-              name="angle-right"
-              size={24}
-              color="#999"
-              style={styles.optionIcon}
-            />
+            <Icon name="angle-right" size={24} color="#999" style={styles.optionIcon} />
           </TouchableOpacity>
+
           <TouchableOpacity style={styles.option}>
             <Icon name="info-circle" size={24} color="#3f51b5" />
             <Text style={styles.optionText}>About</Text>
-            <Icon
-              name="angle-right"
-              size={24}
-              color="#999"
-              style={styles.optionIcon}
-            />
+            <Icon name="angle-right" size={24} color="#999" style={styles.optionIcon} />
           </TouchableOpacity>
+
           <TouchableOpacity style={styles.option} onPress={handleLogout}>
             <Icon name="sign-out" size={24} color="#e91e63" />
             <Text style={styles.optionText}>Logout</Text>
-            <Icon
-              name="angle-right"
-              size={24}
-              color="#999"
-              style={styles.optionIcon}
-            />
+            <Icon name="angle-right" size={24} color="#999" style={styles.optionIcon} />
           </TouchableOpacity>
         </View>
       </View>
@@ -118,6 +124,9 @@ const styles = StyleSheet.create({
     color: "#333",
   },
   optionIcon: {
+    marginLeft: "auto",
+  },
+  switch: {
     marginLeft: "auto",
   },
 });
