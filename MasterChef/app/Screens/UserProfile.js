@@ -38,7 +38,7 @@ const UserProfile = () => {
     setLoading(true);
 
     try {
-      const response = await fetch(`https://long-places-wonder.loca.lt/api/userDetails/${authEmail}`);
+      const response = await fetch(`https://lucky-cougars-know.loca.lt/api/userDetails/${authEmail}`);
       const data = await response.json();
 
       if (response.ok && data.user) {
@@ -70,7 +70,7 @@ const UserProfile = () => {
 
     try {
       const response = await fetch(
-        `https://long-places-wonder.loca.lt/api/userDetails/${authEmail}`,
+        `https://lucky-cougars-know.loca.lt/api/userDetails/${authEmail}`,
         {
           method: "POST",
           headers: { "Content-Type": "application/json" },

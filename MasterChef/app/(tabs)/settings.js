@@ -72,7 +72,7 @@ const Settings = () => {
             <Icon name="angle-right" size={24} color="#999" style={styles.optionIcon} />
           </TouchableOpacity>
 
-          <TouchableOpacity style={styles.option}>
+          <TouchableOpacity style={styles.option} onPress={() => Navigation.navigate("Screens/About")}>
             <Icon name="info-circle" size={24} color="#3f51b5" />
             <Text style={styles.optionText}>About</Text>
             <Icon name="angle-right" size={24} color="#999" style={styles.optionIcon} />
