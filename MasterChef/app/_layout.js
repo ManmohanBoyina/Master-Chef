@@ -8,7 +8,11 @@ export default function RootLayout() {
   return (
     <Provider store={store}>
       <QueryClientProvider client={queryClient}>
-        <AppWrapper></AppWrapper>
+        <Stack screenOptions = {{
+        headerShown: false, // hide all headers by default
+          animation: 'slide_from_right',
+        }}>
+        </Stack>
       </QueryClientProvider>
     </Provider>
   );
