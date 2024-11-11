@@ -160,7 +160,7 @@ const styles = StyleSheet.create({
   },
   topView: {
     width: "100%",
-    height: "40%",
+    height: "45%",
     justifyContent: "center",
     alignItems: "center",
     position: "relative",

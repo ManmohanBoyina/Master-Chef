@@ -35,7 +35,7 @@ const Settings = () => {
 
   const handleLogout = async () => {
     await dispatch(logoutUserAction());
-    router.push("/auth/login");
+    router.replace("/auth/login"); // Replaces the current route without adding it to history stack
   };
 
   return (
