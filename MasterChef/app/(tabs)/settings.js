@@ -6,11 +6,7 @@ import { logoutUserAction } from "../(redux)/authSlice";
 import { useRouter } from "expo-router";
 import ProtectedRoute from "../../components/ProtectedRoute";
 import { useNavigation } from "expo-router";
-import {
-  requestNotificationPermission,
-  scheduleRandomNotifications,
-  cancelNotifications,
-} from "../services/Notification"; // Import notification service functions
+import { requestNotificationPermission, scheduleRandomNotifications, cancelNotifications } from "../services/Notification";
 
 const Settings = () => {
   const dispatch = useDispatch();
@@ -19,19 +15,17 @@ const Settings = () => {
   const [isNotificationsEnabled, setIsNotificationsEnabled] = useState(false);
 
   const handleToggleNotifications = async () => {
-    setIsNotificationsEnabled((previousState) => !previousState);
-    
     if (!isNotificationsEnabled) {
-      // Enable notifications
       const permissionGranted = await requestNotificationPermission();
       if (permissionGranted) {
         scheduleRandomNotifications();
+        setIsNotificationsEnabled(true);
       }
     } else {
-      // Disable notifications
       cancelNotifications();
+      setIsNotificationsEnabled(false);
     }
-  };  
+  };
 
   const handleLogout = async () => {
     await dispatch(logoutUserAction());
