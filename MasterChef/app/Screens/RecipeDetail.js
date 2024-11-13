@@ -1,29 +1,57 @@
-import React from "react";
-import { View, Text, StyleSheet, Image, ScrollView, Linking } from "react-native";
+import React, { useState } from "react";
+import { View, Text, StyleSheet, Image, ScrollView, TouchableOpacity, Share } from "react-native";
+import { WebView } from "react-native-webview";
 import { useRoute } from "@react-navigation/native";
+import Icon from "react-native-vector-icons/FontAwesome"; // Using FontAwesome for the share icon
 
 const RecipeDetail = () => {
   const route = useRoute();
   const recipe = route.params?.recipe;
-  console.log("Recipe:", recipe);
+  const [imageError, setImageError] = useState(false); // Error state for image
 
   if (!recipe) {
     return <Text style={styles.errorText}>Recipe data is not available.</Text>;
   }
 
+  // Extract the YouTube video ID from the URL
+  const extractYouTubeId = (url) => {
+    const videoIdMatch = url.match(/(?:https?:\/\/)?(?:www\.)?youtu(?:be\.com\/(?:[^/]+\/.+\/|(?:v|e(?:mbed)?)\/|.*[?&]v=)|\.be\/)([^"&?/\s]{11})/);
+    return videoIdMatch ? videoIdMatch[1] : null;
+  };
+
+  const videoId = recipe.videoUrl ? extractYouTubeId(recipe.videoUrl) : null;
+  const embedUrl = videoId ? `https://www.youtube.com/embed/${videoId}` : null;
+
+  // Function to handle sharing the recipe
+  const handleShare = async () => {
+    try {
+      await Share.share({
+        message: `Check out this recipe: ${recipe.recipename}\n\nIngredients:\n${recipe.ingredientLines.join(", ")}\n\nInstructions:\n${recipe.instructions}`,
+      });
+    } catch (error) {
+      alert("Failed to share recipe");
+    }
+  };
+
   return (
     <ScrollView style={styles.container}>
-      {/* Display recipe image if available */}
-      {recipe.imageUrl ? (
-        <Image source={{ uri: recipe.imageUrl }} style={styles.recipeImage} />
+      {recipe.imageUrl && !imageError ? (
+        <Image
+          source={{ uri: recipe.imageUrl }}
+          style={styles.recipeImage}
+          onError={() => setImageError(true)} // Set error if image fails to load
+        />
       ) : (
         <Text style={styles.errorText}>Image not available</Text>
       )}
 
-      {/* Recipe name */}
-      <Text style={styles.recipeName}>{recipe.recipename || "Recipe Name Not Available"}</Text>
+      <View style={styles.titleContainer}>
+        <Text style={styles.recipeName}>{recipe.recipename || "Recipe Name Not Available"}</Text>
+        <TouchableOpacity onPress={handleShare} style={styles.shareButton}>
+          <Icon name="share-alt" size={20} color="#007AFF" />
+        </TouchableOpacity>
+      </View>
 
-      {/* Ingredients list */}
       <Text style={styles.sectionTitle}>Ingredients:</Text>
       {recipe.ingredientLines && recipe.ingredientLines.length > 0 ? (
         recipe.ingredientLines.map((ingredient, index) => (
@@ -35,26 +63,25 @@ const RecipeDetail = () => {
         <Text style={styles.errorText}>No ingredients available</Text>
       )}
 
-      {/* Instructions */}
       <Text style={styles.sectionTitle}>Instructions:</Text>
-      {recipe.instructions
-        ? recipe.instructions.split(",").map((instruction, index) => (
-            <Text key={index} style={styles.instruction}>
-              • {instruction.trim()}
-            </Text>
-          ))
-        : <Text style={styles.errorText}>No instructions available</Text>}
+      {recipe.instructions ? (
+        recipe.instructions.split(",").map((instruction, index) => (
+          <Text key={index} style={styles.instruction}>
+            • {instruction.trim()}
+          </Text>
+        ))
+      ) : (
+        <Text style={styles.errorText}>No instructions available</Text>
+      )}
 
-      {/* Video tutorial link, if available */}
-      {recipe.videoUrl ? (
+      {videoId ? (
         <>
           <Text style={styles.sectionTitle}>Video Tutorial:</Text>
-          <Text
-            style={styles.videoLink}
-            onPress={() => Linking.openURL(recipe.videoUrl)}
-          >
-            Watch Video
-          </Text>
+          <WebView
+            source={{ uri: embedUrl }}
+            style={styles.videoPlayer}
+            allowsFullscreenVideo
+          />
         </>
       ) : (
         <Text style={styles.errorText}>No video available</Text>
@@ -77,12 +104,22 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     marginBottom: 16,
   },
+  titleContainer: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
+    marginBottom: 16,
+  },
   recipeName: {
     fontSize: 24,
     fontWeight: "bold",
-    marginBottom: 16,
     color: "#333",
     textAlign: "center",
+    flex: 1,
+  },
+  shareButton: {
+    marginLeft: 8,
+    padding: 8,
   },
   sectionTitle: {
     fontSize: 18,
@@ -107,11 +144,12 @@ const styles = StyleSheet.create({
     borderLeftWidth: 2,
     borderLeftColor: "#ff6347",
   },
-  videoLink: {
-    fontSize: 16,
-    color: "#0066cc",
-    marginTop: 8,
-    textDecorationLine: "underline",
+  videoPlayer: {
+    width: "100%",
+    aspectRatio: 16 / 9, // Maintains 16:9 aspect ratio
+    marginTop: 10,
+    marginBottom: 20, // Adds spacing below the video
+    borderRadius: 10,
   },
   errorText: {
     textAlign: "center",

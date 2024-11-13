@@ -8,51 +8,47 @@ import {
   Alert,
 } from "react-native";
 import React, { useState } from "react";
-import { useSelector } from "react-redux"; // Import useSelector to access Redux state
-
+import { useSelector } from "react-redux"; 
+import config from "../../config";
 const AddRecipe = () => {
-  // State variables to store form inputs
   const [recipeName, setRecipeName] = useState("");
   const [ingredients, setIngredients] = useState("");
   const [imageUrl, setImageUrl] = useState("");
+  const [videoUrl, setVideoUrl] = useState(""); // New state for video URL
   const [instructions, setInstructions] = useState("");
 
-  // Retrieve the logged-in user's email from the Redux store
   const userEmail = useSelector((state) => state.auth.user?.email);
 
-  // Function to handle adding recipe
   const addRecipeToDatabase = async () => {
-    // Check if all fields are filled
     if (!recipeName || !ingredients || !instructions) {
       Alert.alert("Error", "Please fill all the fields.");
       return;
     }
 
-    // Construct the new recipe object
     const newRecipe = {
-      recipename: recipeName, // Ensure this matches the Mongoose schema field name
-      ingredientLines: ingredients.split(","), // Split ingredients by commas
-      imageUrl, // Use imageUrl as expected by the back-end
-      instructions, // Consistent with the schema field
-      email: userEmail, // Automatically add the user's email
+      recipename: recipeName,
+      ingredientLines: ingredients.split(","),
+      imageUrl,
+      videoUrl, // Include video URL
+      instructions,
+      email: userEmail,
     };
 
     try {
-      const response = await fetch("https://nasty-games-tease.loca.lt/api/recipe/recipe", {
+      const response = await fetch(`${config.API_URL}/api/recipe/recipe`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify(newRecipe), // Send new recipe as JSON
+        body: JSON.stringify(newRecipe),
       });
 
       if (response.ok) {
         Alert.alert("Success", "Recipe added successfully!");
-
-        // Clear the text fields after successful submission
         setRecipeName("");
         setIngredients("");
         setImageUrl("");
+        setVideoUrl(""); // Clear video URL input
         setInstructions("");
       } else {
         const errorMessage = await response.text();
@@ -88,6 +84,13 @@ const AddRecipe = () => {
         placeholder="Image URL"
         value={imageUrl}
         onChangeText={setImageUrl}
+      />
+
+      <TextInput
+        style={styles.input}
+        placeholder="Video URL"
+        value={videoUrl}
+        onChangeText={setVideoUrl}
       />
 
       <TextInput

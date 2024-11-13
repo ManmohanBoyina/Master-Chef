@@ -12,6 +12,7 @@ import {
 import { Ionicons } from "@expo/vector-icons";
 import { useSelector } from "react-redux";
 import DateTimePicker from "@react-native-community/datetimepicker";
+import config from "../../config";
 
 const UserProfile = () => {
   const authEmail = useSelector((state) => state.auth.user?.email);
@@ -38,7 +39,7 @@ const UserProfile = () => {
     setLoading(true);
 
     try {
-      const response = await fetch(`https://lucky-cougars-know.loca.lt/api/userDetails/${authEmail}`);
+      const response = await fetch(`${config.API_URL}/api/userDetails/${authEmail}`);
       const data = await response.json();
 
       if (response.ok && data.user) {

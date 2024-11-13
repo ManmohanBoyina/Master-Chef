@@ -19,6 +19,7 @@ import { useRouter } from "expo-router";
 import ProtectedRoute from "../../components/ProtectedRoute";
 import { useNavigation } from "expo-router";
 import { requestNotificationPermission, scheduleRandomNotifications, cancelNotifications } from "../services/Notification";
+import { useStripe } from "@stripe/stripe-react-native";
 
 const Settings = () => {
   const dispatch = useDispatch();
@@ -26,6 +27,7 @@ const Settings = () => {
   const Navigation = useNavigation();
   const [isNotificationsEnabled, setIsNotificationsEnabled] = useState(false);
   const [isModalVisible, setModalVisible] = useState(false);
+  const stripe = useStripe();
 
   const handleToggleNotifications = async () => {
     if (!isNotificationsEnabled) {
@@ -37,6 +39,34 @@ const Settings = () => {
     } else {
       cancelNotifications();
       setIsNotificationsEnabled(false);
+    }
+  };
+
+  const subscribe = async () => {
+    try {
+      // sending request
+      const response = await fetch("http://localhost:8080/pay", {
+        method: "POST",
+        body: JSON.stringify({ name }),
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+      const data = await response.json();
+      if (!response.ok) return Alert.alert(data.message);
+      const clientSecret = data.clientSecret;
+      const initSheet = await stripe.initPaymentSheet({
+        paymentIntentClientSecret: clientSecret,
+      });
+      if (initSheet.error) return Alert.alert(initSheet.error.message);
+      const presentSheet = await stripe.presentPaymentSheet({
+        clientSecret,
+      });
+      if (presentSheet.error) return Alert.alert(presentSheet.error.message);
+      Alert.alert("Payment complete, thank you!");
+    } catch (err) {
+      console.error(err);
+      Alert.alert("Something went wrong, try again later!");
     }
   };
 
