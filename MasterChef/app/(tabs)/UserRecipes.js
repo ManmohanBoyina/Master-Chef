@@ -11,9 +11,11 @@ import {
   RefreshControl,
   Share,
 } from "react-native";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useSelector } from "react-redux";
 import { useNavigation, useFocusEffect } from "@react-navigation/native";
 import Icon from "react-native-vector-icons/FontAwesome";
+import config from "../../config";
 
 const UserRecipes = () => {
   const [loading, setLoading] = useState(true);
@@ -25,12 +27,19 @@ const UserRecipes = () => {
   const fetchUserRecipes = async () => {
     try {
       const response = await fetch(
-        `https://nasty-games-tease.loca.lt/api/recipe/getrecipe?email=${encodeURIComponent(userEmail)}`
+        `${config.API_URL}/api/recipe/getrecipe?email=${encodeURIComponent(userEmail)}`
       );
       const data = await response.json();
 
       if (response.ok) {
-        setRecipes(data.recipes || []);
+        const bookmarkedRecipes = await getBookmarkedRecipes();
+        const recipesWithBookmarks = data.recipes
+          .map((recipe) => ({
+            ...recipe,
+            bookmarked: bookmarkedRecipes.includes(recipe._id),
+          }))
+          .sort((a, b) => b.bookmarked - a.bookmarked); // Sort to keep bookmarked recipes at the top
+        setRecipes(recipesWithBookmarks);
       } else {
         Alert.alert("Error", data.message || "Failed to fetch recipes");
       }
@@ -52,7 +61,6 @@ const UserRecipes = () => {
     }
   }, [userEmail]);
 
-  // Refetch data when screen is focused
   useFocusEffect(
     useCallback(() => {
       if (userEmail) {
@@ -68,12 +76,10 @@ const UserRecipes = () => {
 
   const handleShare = async (recipe) => {
     try {
-      // Generate indexed ingredients list
       const indexedIngredients = recipe.ingredientLines
         .map((ingredient, index) => `${index + 1}. ${ingredient}`)
         .join("\n");
 
-      // Generate indexed instructions
       const indexedInstructions = recipe.instructions
         .split(",")
         .map((instruction, index) => `${index + 1}. ${instruction.trim()}`)
@@ -89,6 +95,45 @@ const UserRecipes = () => {
     }
   };
 
+  // Toggle and persist bookmark state
+  const toggleBookmark = async (recipeId) => {
+    setRecipes((prevRecipes) =>
+      prevRecipes
+        .map((recipe) =>
+          recipe._id === recipeId
+            ? { ...recipe, bookmarked: !recipe.bookmarked }
+            : recipe
+        )
+        .sort((a, b) => b.bookmarked - a.bookmarked) // Sort to keep bookmarked recipes at the top
+    );
+    await updateBookmarkedRecipes(recipeId);
+  };
+
+  const getBookmarkedRecipes = async () => {
+    try {
+      const jsonValue = await AsyncStorage.getItem("bookmarkedRecipes");
+      return jsonValue != null ? JSON.parse(jsonValue) : [];
+    } catch (e) {
+      console.error("Failed to fetch bookmarks from storage:", e);
+      return [];
+    }
+  };
+
+  const updateBookmarkedRecipes = async (recipeId) => {
+    try {
+      const currentBookmarks = await getBookmarkedRecipes();
+      const updatedBookmarks = currentBookmarks.includes(recipeId)
+        ? currentBookmarks.filter((id) => id !== recipeId)
+        : [...currentBookmarks, recipeId];
+      await AsyncStorage.setItem(
+        "bookmarkedRecipes",
+        JSON.stringify(updatedBookmarks)
+      );
+    } catch (e) {
+      console.error("Failed to update bookmarks in storage:", e);
+    }
+  };
+
   const renderRecipeItem = ({ item }) => (
     <TouchableOpacity
       onPress={() => navigation.navigate("Screens/RecipeDetail", { recipe: item })}
@@ -101,12 +146,16 @@ const UserRecipes = () => {
             {item.ingredientLines ? item.ingredientLines.join(", ") : ""}
           </Text>
         </View>
-        {/* Share Icon */}
+        {/* Bookmark Icon */}
         <TouchableOpacity
-          style={styles.shareIcon}
-          onPress={() => handleShare(item)}
+          style={styles.bookmarkIcon}
+          onPress={() => toggleBookmark(item._id)}
         >
-          <Icon name="share-alt" size={20} color="#333" />
+          <Icon
+            name={item.bookmarked ? "bookmark" : "bookmark-o"}
+            size={20}
+            color={item.bookmarked ? "#FFD700" : "#999"} // Yellow if bookmarked, gray if not
+          />
         </TouchableOpacity>
       </View>
     </TouchableOpacity>
@@ -114,6 +163,7 @@ const UserRecipes = () => {
 
   return (
     <View style={styles.container}>
+      <Text style={styles.title}>My Recipes</Text>
       {loading ? (
         <ActivityIndicator size="large" color="#05B681" />
       ) : recipes.length > 0 ? (
@@ -140,6 +190,13 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: "#f4f4f4",
     padding: 16,
+  },
+  title: {
+    fontSize: 24,
+    fontWeight: "bold",
+    textAlign: "center",
+    color: "#333",
+    marginVertical: 16,
   },
   recipeItem: {
     flexDirection: "row",
@@ -172,13 +229,10 @@ const styles = StyleSheet.create({
     color: "#555",
     marginTop: 4,
   },
-  shareIcon: {
+  bookmarkIcon: {
     position: "absolute",
-    bottom: 10,
+    top: 10,
     right: 10,
-    padding: 8,
-    backgroundColor: "#f0f0f0",
-    borderRadius: 20,
   },
   noRecipesText: {
     textAlign: "center",

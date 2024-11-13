@@ -1,10 +1,10 @@
 import axios from "axios";
-
+import config from "../../../config";
 // Function for logging in the user
 const loginUser = async ({ email, password }) => {
   try {
     const response = await axios.post(
-      "https://nasty-games-tease.loca.lt/api/users/login",
+      `${config.API_URL}/api/users/login`,
       {
         email,
         password,
@@ -30,7 +30,7 @@ const loginUser = async ({ email, password }) => {
 const registerUser = async ({ email, password }) => {
   try {
     const response = await axios.post(
-      "https://nasty-games-tease.loca.lt/api/users/register",
+      `${config.API_URL}/api/users/register`,
       {
         email,
         password,
