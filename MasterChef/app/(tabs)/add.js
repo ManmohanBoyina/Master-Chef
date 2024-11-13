@@ -23,7 +23,7 @@ const AddRecipe = () => {
   // Function to handle adding recipe
   const addRecipeToDatabase = async () => {
     // Check if all fields are filled
-    if (!recipeName || !ingredients || !instructions || !imageUrl) {
+    if (!recipeName || !ingredients || !instructions) {
       Alert.alert("Error", "Please fill all the fields.");
       return;
     }
@@ -38,7 +38,7 @@ const AddRecipe = () => {
     };
 
     try {
-      const response = await fetch("https://silent-clocks-invite.loca.lt/api/recipe/recipe", {
+      const response = await fetch("https://nasty-games-tease.loca.lt/api/recipe/recipe", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

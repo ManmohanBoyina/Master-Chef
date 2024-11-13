@@ -4,7 +4,7 @@ import axios from "axios";
 const loginUser = async ({ email, password }) => {
   try {
     const response = await axios.post(
-      "https://beige-teeth-look.loca.lt/api/users/login",
+      "https://nasty-games-tease.loca.lt/api/users/login",
       {
         email,
         password,
@@ -30,7 +30,7 @@ const loginUser = async ({ email, password }) => {
 const registerUser = async ({ email, password }) => {
   try {
     const response = await axios.post(
-      "https://beige-teeth-look.loca.lt/api/users/register",
+      "https://nasty-games-tease.loca.lt/api/users/register",
       {
         email,
         password,

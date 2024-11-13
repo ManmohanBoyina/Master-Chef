@@ -1,38 +1,51 @@
 import React from "react";
-import { StyleSheet, Text, View, ScrollView } from "react-native";
+import { View, Text, StyleSheet, ScrollView } from "react-native";
 
 const About = () => {
   return (
-    <ScrollView contentContainerStyle={styles.container} showsVerticalScrollIndicator={false}>
-      <Text style={styles.appName}>Master Chef</Text>
-      <Text style={styles.version}>Version 1.0.0</Text>
-      
-      <Text style={styles.sectionTitle}>About Master Chef</Text>
-      <Text style={styles.description}>
-        Foodie Reminder is your personal food and hydration assistant, designed to keep you healthy and energized throughout the day. With our app, you'll receive timely reminders about snacks, hydration, and healthy food choices, helping you stay on track with your wellness goals.
-      </Text>
-      
-      <Text style={styles.sectionTitle}>Key Features</Text>
-      <Text style={styles.features}>
-        • Personalized Food Reminders: Receive customized notifications about healthy snacks, meal times, and hydration based on your preferences.{'\n'}
-        • Health Insights: Get tips and insights on nutritious choices to make the most of your meals.{'\n'}
-        • Flexible Schedule: Set reminders based on your unique routine, ensuring you stay mindful of your health throughout the day.{'\n'}
-        • Community Recipes: Access recipes shared by other food lovers and nutritionists to keep your meals exciting and healthy.
-      </Text>
-      
-      <Text style={styles.sectionTitle}>Why Use Master Chef?</Text>
-      <Text style={styles.description}>
-        Life gets busy, and it’s easy to overlook meal times or make unhealthy food choices. Master Chef provides subtle yet powerful nudges to help you make mindful eating decisions. From hydration reminders to meal prep ideas, we’re here to support a balanced lifestyle in an easy-to-use, friendly way.
+    <ScrollView
+      style={styles.container}
+      contentContainerStyle={styles.contentContainer}
+      showsVerticalScrollIndicator={false} // Hide the scroll indicator
+    >
+      <Text style={styles.header}>About Master Chef</Text>
+
+      <Text style={styles.text}>
+        Welcome to <Text style={styles.bold}>Master Chef</Text>, your ultimate culinary companion! Whether you're a seasoned chef or a cooking enthusiast, this app is designed to make your culinary journey both easy and enjoyable.
       </Text>
 
-      <Text style={styles.sectionTitle}>Developer Message</Text>
-      <Text style={styles.developer}>
-        Developed with love by Manmohan Boyina, Master Chef is a project born out of a desire to promote healthier eating habits in a simple and accessible way. Our team is committed to continuous improvement and would love to hear your feedback to make this app even better.
+      <Text style={styles.subHeader}>With Master Chef, you can:</Text>
+      <Text style={styles.text}>
+        - <Text style={styles.bold}>Add Your Own Recipes</Text>: Share your personal creations with the world! Add detailed recipes, including ingredients, instructions, and even photos of your delicious dishes.
       </Text>
-      
-      <Text style={styles.sectionTitle}>Contact Us</Text>
-      <Text style={styles.contact}>
-        Questions, feedback, or suggestions? We'd love to hear from you! Reach us at mboyina@iu.edu or follow us on social media @manmohan__boyina.
+      <Text style={styles.text}>
+        - <Text style={styles.bold}>View and Manage Your Recipes</Text>: Keep track of all your added recipes in one place. Easily access, edit, or delete them as needed.
+      </Text>
+      <Text style={styles.text}>
+        - <Text style={styles.bold}>Explore Global Cuisines</Text>: Discover recipes from around the world. With a comprehensive search feature, you can find recipes for all cuisines, from Italian and Mexican to Thai, Indian, and more.
+      </Text>
+      <Text style={styles.text}>
+        - <Text style={styles.bold}>Discover New Ideas</Text>: Get inspired with unique recipes and ingredients. Master Chef helps you explore different cooking styles and flavors, making every meal an adventure.
+      </Text>
+
+      <Text style={styles.subHeader}>Our Mission</Text>
+      <Text style={styles.text}>
+        At <Text style={styles.bold}>Master Chef</Text>, we believe that cooking is a journey of creativity and flavor. Our goal is to bring people together through food by offering a platform where users can share and explore diverse recipes. Whether you’re cooking for yourself, your family, or friends, Master Chef is here to help make every meal memorable.
+      </Text>
+
+      <Text style={styles.subHeader}>Join Us in the Kitchen</Text>
+      <Text style={styles.text}>
+        We’re passionate about food and committed to building a community of like-minded cooks. So roll up your sleeves, gather your ingredients, and let Master Chef guide you to culinary success. Bon appétit!
+      </Text>
+
+      <Text style={styles.subHeader}>Developers & Credits</Text>
+      <Text style={styles.text}>
+        <Text style={styles.bold}>Developed by:</Text>{"\n"}
+        1. Manmohan Boyina{"\n"}
+        <Text style={styles.bold}>Special Thanks and Credits to:</Text>{"\n"}
+        1. Chabane{"\n"}
+        2. Ayman{"\n"}
+        3. Mihir
       </Text>
     </ScrollView>
   );
@@ -40,57 +53,35 @@ const About = () => {
 
 const styles = StyleSheet.create({
   container: {
-    flexGrow: 1,
+    flex: 1,
     padding: 20,
     backgroundColor: "#f5f5f5",
-    alignItems: "center",
   },
-  logo: {
-    width: 100,
-    height: 100,
-    marginBottom: 20,
+  contentContainer: {
+    paddingBottom: 30, // Extra padding at the bottom to prevent last sentence from being hidden
   },
-  appName: {
-    fontSize: 24,
+  header: {
+    fontSize: 28,
     fontWeight: "bold",
-    color: "#333",
+    marginBottom: 10,
     textAlign: "center",
+    color: "#333",
   },
-  version: {
-    fontSize: 16,
-    color: "#888",
-    marginBottom: 20,
-  },
-  sectionTitle: {
+  subHeader: {
     fontSize: 20,
     fontWeight: "bold",
-    color: "#333",
     marginTop: 20,
     marginBottom: 10,
-    alignSelf: "flex-start",
+    color: "#333",
   },
-  description: {
+  text: {
     fontSize: 16,
     color: "#555",
-    textAlign: "justify",
+    lineHeight: 24,
     marginBottom: 10,
   },
-  features: {
-    fontSize: 16,
-    color: "#555",
-    textAlign: "justify",
-  },
-  developer: {
-    fontSize: 16,
-    color: "#555",
-    textAlign: "justify",
-    marginBottom: 10,
-  },
-  contact: {
-    fontSize: 16,
-    color: "#555",
-    textAlign: "justify",
-    marginBottom: 20,
+  bold: {
+    fontWeight: "bold",
   },
 });
 

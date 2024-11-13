@@ -81,7 +81,7 @@ const Index = () => {
           style={styles.image}
         />
         <View style={styles.transparentView}>
-          <Text style={styles.logo}>RecipePro</Text>
+          <Text style={styles.logo}>Master Chef</Text>
           <TouchableOpacity
             activeOpacity={0.8}
             style={styles.searchBox}
