@@ -35,8 +35,6 @@ npm expo start
   <li><b>Expo</b> - React Native development environment</li>
   <li><b>Axios</b> - To fetch recipes from the API</li>
   <li><b>React Navigation</b> - Seamless navigation in the app</li>
-  <li><b>Node.js & Express</b> - Backend framework for REST API</li>
-  <li><b>MongoDB</b> - Database to store recipes and user data</li>
 </ul>
 
 <h2>📸 Screenshots</h2>
