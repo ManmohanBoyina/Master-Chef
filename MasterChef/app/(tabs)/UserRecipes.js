@@ -9,9 +9,11 @@ import {
   Alert,
   TouchableOpacity,
   RefreshControl,
+  Share,
 } from "react-native";
 import { useSelector } from "react-redux";
 import { useNavigation, useFocusEffect } from "@react-navigation/native";
+import Icon from "react-native-vector-icons/FontAwesome";
 
 const UserRecipes = () => {
   const [loading, setLoading] = useState(true);
@@ -23,7 +25,7 @@ const UserRecipes = () => {
   const fetchUserRecipes = async () => {
     try {
       const response = await fetch(
-        `https://chilly-streets-wear.loca.lt/api/recipe/getrecipe?email=${encodeURIComponent(userEmail)}`
+        `https://nasty-games-tease.loca.lt/api/recipe/getrecipe?email=${encodeURIComponent(userEmail)}`
       );
       const data = await response.json();
 
@@ -64,6 +66,29 @@ const UserRecipes = () => {
     fetchUserRecipes();
   };
 
+  const handleShare = async (recipe) => {
+    try {
+      // Generate indexed ingredients list
+      const indexedIngredients = recipe.ingredientLines
+        .map((ingredient, index) => `${index + 1}. ${ingredient}`)
+        .join("\n");
+
+      // Generate indexed instructions
+      const indexedInstructions = recipe.instructions
+        .split(",")
+        .map((instruction, index) => `${index + 1}. ${instruction.trim()}`)
+        .join("\n");
+
+      const message = `Check out this recipe: ${recipe.recipename}\n\nIngredients:\n${indexedIngredients}\n\nInstructions:\n${indexedInstructions}`;
+
+      await Share.share({
+        message,
+      });
+    } catch (error) {
+      Alert.alert("Error", "Failed to share the recipe");
+    }
+  };
+
   const renderRecipeItem = ({ item }) => (
     <TouchableOpacity
       onPress={() => navigation.navigate("Screens/RecipeDetail", { recipe: item })}
@@ -76,6 +101,13 @@ const UserRecipes = () => {
             {item.ingredientLines ? item.ingredientLines.join(", ") : ""}
           </Text>
         </View>
+        {/* Share Icon */}
+        <TouchableOpacity
+          style={styles.shareIcon}
+          onPress={() => handleShare(item)}
+        >
+          <Icon name="share-alt" size={20} color="#333" />
+        </TouchableOpacity>
       </View>
     </TouchableOpacity>
   );
@@ -119,6 +151,7 @@ const styles = StyleSheet.create({
     shadowOffset: { width: 0, height: 1 },
     shadowOpacity: 0.2,
     shadowRadius: 1.5,
+    position: "relative",
   },
   recipeImage: {
     width: 80,
@@ -138,6 +171,14 @@ const styles = StyleSheet.create({
     fontSize: 14,
     color: "#555",
     marginTop: 4,
+  },
+  shareIcon: {
+    position: "absolute",
+    bottom: 10,
+    right: 10,
+    padding: 8,
+    backgroundColor: "#f0f0f0",
+    borderRadius: 20,
   },
   noRecipesText: {
     textAlign: "center",

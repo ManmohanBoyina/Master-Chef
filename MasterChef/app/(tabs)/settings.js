@@ -1,7 +1,19 @@
 import React, { useState } from "react";
-import { StyleSheet, Text, View, TouchableOpacity, Switch } from "react-native";
+import {
+  StyleSheet,
+  Text,
+  View,
+  TouchableOpacity,
+  Switch,
+  Modal,
+  Image,
+  Alert,
+} from "react-native";
 import Icon from "react-native-vector-icons/FontAwesome";
-import { useDispatch, useSelector } from "react-redux";
+import * as FileSystem from "expo-file-system";
+import * as MediaLibrary from "expo-media-library";
+import { Asset } from "expo-asset";
+import { useDispatch } from "react-redux";
 import { logoutUserAction } from "../(redux)/authSlice";
 import { useRouter } from "expo-router";
 import ProtectedRoute from "../../components/ProtectedRoute";
@@ -13,6 +25,7 @@ const Settings = () => {
   const router = useRouter();
   const Navigation = useNavigation();
   const [isNotificationsEnabled, setIsNotificationsEnabled] = useState(false);
+  const [isModalVisible, setModalVisible] = useState(false);
 
   const handleToggleNotifications = async () => {
     if (!isNotificationsEnabled) {
@@ -29,7 +42,35 @@ const Settings = () => {
 
   const handleLogout = async () => {
     await dispatch(logoutUserAction());
-    router.replace("/auth/login"); // Replaces the current route without adding it to history stack
+    router.replace("/auth/login");
+  };
+
+  // Function to download the image
+  const downloadImage = async () => {
+    const asset = Asset.fromModule(require("../../assets/Payment.jpg"));
+
+    try {
+      await asset.downloadAsync();
+      const localUri = asset.localUri;
+
+      const { status } = await MediaLibrary.requestPermissionsAsync();
+      if (status !== "granted") {
+        Alert.alert("Permission required", "You need to enable media permissions to download images.");
+        return;
+      }
+
+      const fileUri = FileSystem.documentDirectory + "downloadedImage.jpg";
+      await FileSystem.copyAsync({
+        from: localUri,
+        to: fileUri,
+      });
+
+      await MediaLibrary.createAssetAsync(fileUri);
+      Alert.alert("Success", "Image downloaded successfully!");
+    } catch (error) {
+      console.error("Error downloading image:", error);
+      Alert.alert("Error", "Failed to download image.");
+    }
   };
 
   return (
@@ -46,7 +87,6 @@ const Settings = () => {
             <Icon name="angle-right" size={24} color="#999" style={styles.optionIcon} />
           </TouchableOpacity>
 
-          {/* Notifications Toggle */}
           <View style={styles.option}>
             <Icon name="bell" size={24} color="#ff9800" />
             <Text style={styles.optionText}>Notifications</Text>
@@ -60,7 +100,11 @@ const Settings = () => {
             />
           </View>
 
-          <TouchableOpacity style={styles.option}>
+          {/* Payment Button to Open Image Modal */}
+          <TouchableOpacity
+            style={styles.option}
+            onPress={() => setModalVisible(true)}
+          >
             <Icon name="lock" size={24} color="#f44336" />
             <Text style={styles.optionText}>Payment</Text>
             <Icon name="angle-right" size={24} color="#999" style={styles.optionIcon} />
@@ -78,6 +122,30 @@ const Settings = () => {
             <Icon name="angle-right" size={24} color="#999" style={styles.optionIcon} />
           </TouchableOpacity>
         </View>
+
+        {/* Modal to Show Image */}
+        <Modal
+          visible={isModalVisible}
+          animationType="slide"
+          transparent={true}
+        >
+          <View style={styles.modalContainer}>
+            <View style={styles.modalContent}>
+              <TouchableOpacity style={styles.closeButton} onPress={() => setModalVisible(false)}>
+                <Icon name="close" size={24} color="#333" />
+              </TouchableOpacity>
+              <Text style={styles.modalText}>Donate to help us maintain the app</Text>
+              <Image
+                source={require("../../assets/Payment.jpg")}
+                style={styles.image}
+                resizeMode="contain"
+              />
+              <TouchableOpacity style={styles.downloadButton} onPress={downloadImage}>
+                <Text style={styles.downloadText}>Download Image</Text>
+              </TouchableOpacity>
+            </View>
+          </View>
+        </Modal>
       </View>
     </ProtectedRoute>
   );
@@ -122,5 +190,46 @@ const styles = StyleSheet.create({
   },
   switch: {
     marginLeft: "auto",
+  },
+  modalContainer: {
+    flex: 1,
+    justifyContent: "flex-end",
+    backgroundColor: "rgba(0,0,0,0.5)",
+  },
+  modalContent: {
+    backgroundColor: "#fff",
+    padding: 20,
+    borderTopLeftRadius: 15,
+    borderTopRightRadius: 15,
+    alignItems: "center",
+    height: "60%", // Increased height for a larger view
+  },
+  closeButton: {
+    alignSelf: "flex-end",
+    marginBottom: 10,
+  },
+  modalText: {
+    fontSize: 18,
+    fontWeight: "bold",
+    marginBottom: 10,
+    textAlign: "center",
+    color: "#333",
+  },
+  image: {
+    width: "200%",
+    height: 330, // Larger image size
+    marginVertical: 10,
+  },
+  downloadButton: {
+    backgroundColor: "#05B681",
+    paddingVertical: 10,
+    paddingHorizontal: 20,
+    borderRadius: 5,
+    marginTop: 10,
+  },
+  downloadText: {
+    color: "#fff",
+    fontSize: 16,
+    fontWeight: "bold",
   },
 });

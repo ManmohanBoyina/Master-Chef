@@ -89,19 +89,7 @@ import {
     );
   
     return (
-      <View style={styles.container}>
-        <TouchableOpacity
-          style={styles.backButton}
-          onPress={() => navigation.navigate("Search")} // Explicitly navigate to the Search screen
-        >
-          <Image
-            source={{
-              uri: "https://png.pngtree.com/png-vector/20190120/ourmid/pngtree-back-vector-icon-png-image_470452.jpg",
-            }}
-            style={styles.backIcon}
-          />
-        </TouchableOpacity>
-  
+      <View style={styles.container}>  
         <View style={styles.searchBox}>
           <Image
             source={{
