@@ -20,23 +20,13 @@
 </ul>
 
 <h2>🛠️ Installation</h2>
-<h3>Frontend</h3>
+<h2>🔧 Configuration</h2> <p>Before running the app, make sure to set up the <code>config.js</code> file to define the API endpoint for fetching recipes.</p> <h3>Setup Instructions</h3>
 <pre>
 git clone https://github.com/ManmohanBoyina/master-chef.git
-cd master-chef
+cd Master-chef
 cd MasterChef
 npm install
 npm expo start
-</pre>
-
-<h3>Backend</h3>
-<pre>
-git clone https://github.com/ManmohanBoyina/BackendAPP.git
-npm install
-node --waatch app
-Install localtunnel extension in the VS code
-open a new terminal in VS code parallely
-npx localtunnel --port 8000
 </pre>
 
 <h2>📱 Technologies Used</h2>
