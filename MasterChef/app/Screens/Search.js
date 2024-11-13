@@ -1,3 +1,4 @@
+import React, { useState } from "react";
 import {
   View,
   Text,
@@ -6,21 +7,19 @@ import {
   Image,
   TextInput,
   FlatList,
-  Keyboard,
   Alert,
   Share,
 } from "react-native";
-import React, { useState } from "react";
 import { useNavigation } from "expo-router";
 
 const Search = () => {
-  const [searchText, setSearchText] = useState(""); // State to track search input
-  const [recipes, setRecipes] = useState([]); // State to store unique recipes
+  const [searchText, setSearchText] = useState("");
+  const [recipes, setRecipes] = useState([]);
   const navigation = useNavigation();
 
   const handleClear = () => {
-    setSearchText(""); // Clear the text input
-    setRecipes([]); // Clear the search results
+    setSearchText("");
+    setRecipes([]);
   };
 
   const searchRecipe = (search) => {
@@ -42,8 +41,8 @@ const Search = () => {
       .then((result) => {
         if (result.hits) {
           const uniqueRecipes = [];
-          const seenUris = new Set(); // To track unique 'uri'
-          const seenLabels = new Set(); // To track unique 'label'
+          const seenUris = new Set();
+          const seenLabels = new Set();
 
           result.hits.forEach((hit) => {
             const normalizedUri = hit.recipe.uri.split("?")[0];
@@ -56,7 +55,7 @@ const Search = () => {
             }
           });
 
-          setRecipes(uniqueRecipes); // Set unique recipes
+          setRecipes(uniqueRecipes);
         } else {
           Alert.alert("Error", "No recipes found");
         }
@@ -69,8 +68,7 @@ const Search = () => {
 
   const handleSearchSubmit = () => {
     if (searchText.trim()) {
-      searchRecipe(searchText.trim()); // Call searchRecipe with searchText
-      Keyboard.dismiss(); // Dismiss the keyboard after search
+      searchRecipe(searchText.trim());
     }
   };
 
@@ -84,7 +82,6 @@ const Search = () => {
     }
   };
 
-  // Function to render each recipe
   const renderRecipeItem = ({ item }) => (
     <View style={styles.recipeItem}>
       <Image source={{ uri: item.image }} style={styles.recipeImage} />
@@ -114,9 +111,10 @@ const Search = () => {
           placeholder="Search here..."
           placeholderTextColor="#9e9e9e"
           value={searchText}
-          onChangeText={setSearchText} // Update state on text change
-          onSubmitEditing={handleSearchSubmit} // Trigger searchRecipe on Enter key press
-          returnKeyType="search" // Display "Search" as the Enter key label
+          onChangeText={setSearchText}
+          onSubmitEditing={handleSearchSubmit}
+          returnKeyType="search"
+          autoFocus
         />
         {searchText.length > 0 && (
           <TouchableOpacity onPress={handleClear} style={styles.clearButton}>
@@ -125,7 +123,6 @@ const Search = () => {
         )}
       </View>
 
-      {/* Render the recipes */}
       <FlatList
         data={recipes}
         keyExtractor={(item) => item.uri}
