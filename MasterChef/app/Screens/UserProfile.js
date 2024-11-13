@@ -71,7 +71,7 @@ const UserProfile = () => {
 
     try {
       const response = await fetch(
-        `https://lucky-cougars-know.loca.lt/api/userDetails/${authEmail}`,
+        `${config.API_URL}/api/userDetails/${authEmail}`,
         {
           method: "POST",
           headers: { "Content-Type": "application/json" },

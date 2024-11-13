@@ -1,3 +1,4 @@
+import React, { useState } from "react";
 import {
   StyleSheet,
   Text,
@@ -7,13 +8,12 @@ import {
   ActivityIndicator,
   ImageBackground,
 } from "react-native";
-import React from "react";
+import Icon from "react-native-vector-icons/FontAwesome";
 import { Formik } from "formik";
 import * as Yup from "yup";
 import { useMutation } from "@tanstack/react-query";
 import { registerUser } from "../(services)/api/api";
 
-// Validation schema using Yup
 const validationSchema = Yup.object().shape({
   email: Yup.string().required("Email is required").email("Invalid email").label("Email"),
   password: Yup.string()
@@ -31,6 +31,9 @@ const Register = () => {
     mutationKey: ["register"],
   });
 
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+
   return (
     <ImageBackground
       source={{
@@ -43,19 +46,16 @@ const Register = () => {
         <View style={styles.container}>
           <Text style={styles.title}>Register</Text>
 
-          {/* Display error message */}
           {mutation?.isError && (
             <Text style={styles.errorText}>
               {mutation?.error?.response?.data?.message || "User Already Exists"}
             </Text>
           )}
 
-          {/* Display success message */}
           {mutation?.isSuccess && (
             <Text style={styles.successText}>Registration successful</Text>
           )}
 
-          {/* Formik Form */}
           <Formik
             initialValues={{ email: "", password: "", confirmPassword: "" }}
             onSubmit={(values) => {
@@ -74,7 +74,6 @@ const Register = () => {
               touched,
             }) => (
               <View style={styles.form}>
-                {/* Email Input */}
                 <TextInput
                   style={styles.input}
                   placeholder="Email"
@@ -88,35 +87,56 @@ const Register = () => {
                   <Text style={styles.errorText}>{errors.email}</Text>
                 )}
 
-                {/* Password Input */}
-                <TextInput
-                  style={styles.input}
-                  placeholder="Password"
-                  onChangeText={handleChange("password")}
-                  onBlur={handleBlur("password")}
-                  value={values.password}
-                  secureTextEntry
-                  placeholderTextColor="#888"
-                />
+                <View style={styles.passwordContainer}>
+                  <TextInput
+                    style={styles.passwordInput}
+                    placeholder="Password"
+                    onChangeText={handleChange("password")}
+                    onBlur={handleBlur("password")}
+                    value={values.password}
+                    secureTextEntry={!showPassword}
+                    placeholderTextColor="#888"
+                  />
+                  <TouchableOpacity
+                    style={styles.eyeIcon}
+                    onPress={() => setShowPassword(!showPassword)}
+                  >
+                    <Icon
+                      name={showPassword ? "eye" : "eye-slash"}
+                      size={20}
+                      color="#888"
+                    />
+                  </TouchableOpacity>
+                </View>
                 {errors.password && touched.password && (
                   <Text style={styles.errorText}>{errors.password}</Text>
                 )}
 
-                {/* Confirm Password Input */}
-                <TextInput
-                  style={styles.input}
-                  placeholder="Confirm Password"
-                  onChangeText={handleChange("confirmPassword")}
-                  onBlur={handleBlur("confirmPassword")}
-                  value={values.confirmPassword}
-                  secureTextEntry
-                  placeholderTextColor="#888"
-                />
+                <View style={styles.passwordContainer}>
+                  <TextInput
+                    style={styles.passwordInput}
+                    placeholder="Confirm Password"
+                    onChangeText={handleChange("confirmPassword")}
+                    onBlur={handleBlur("confirmPassword")}
+                    value={values.confirmPassword}
+                    secureTextEntry={!showConfirmPassword}
+                    placeholderTextColor="#888"
+                  />
+                  <TouchableOpacity
+                    style={styles.eyeIcon}
+                    onPress={() => setShowConfirmPassword(!showConfirmPassword)}
+                  >
+                    <Icon
+                      name={showConfirmPassword ? "eye" : "eye-slash"}
+                      size={20}
+                      color="#888"
+                    />
+                  </TouchableOpacity>
+                </View>
                 {errors.confirmPassword && touched.confirmPassword && (
                   <Text style={styles.errorText}>{errors.confirmPassword}</Text>
                 )}
 
-                {/* Submit Button */}
                 <TouchableOpacity style={styles.button} onPress={handleSubmit}>
                   {mutation?.isLoading ? (
                     <ActivityIndicator color="#fff" />
@@ -145,14 +165,14 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: "center",
     alignItems: "center",
-    backgroundColor: "rgba(0, 0, 0, 0.5)", // Overlay for better readability
+    backgroundColor: "rgba(0, 0, 0, 0.5)",
     width: "100%",
   },
   container: {
     justifyContent: "center",
     alignItems: "center",
     padding: 16,
-    backgroundColor: "rgba(255, 255, 255, 0.9)", // White background with slight transparency
+    backgroundColor: "rgba(255, 255, 255, 0.9)",
     borderRadius: 12,
     elevation: 5,
     width: "90%",
@@ -175,6 +195,25 @@ const styles = StyleSheet.create({
     paddingHorizontal: 16,
     marginBottom: 16,
     backgroundColor: "#fff",
+  },
+  passwordContainer: {
+    flexDirection: "row",
+    alignItems: "center",
+    borderColor: "#ddd",
+    borderWidth: 1,
+    borderRadius: 8,
+    backgroundColor: "#fafafa",
+    marginBottom: 16,
+  },
+  passwordInput: {
+    flex: 1,
+    height: 50,
+    paddingHorizontal: 16,
+    fontSize: 16,
+    color: "#333",
+  },
+  eyeIcon: {
+    paddingHorizontal: 10,
   },
   errorText: {
     color: "red",

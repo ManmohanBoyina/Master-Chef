@@ -1,3 +1,4 @@
+import React, { useState, useRef, useEffect } from "react";
 import {
   StyleSheet,
   Text,
@@ -8,14 +9,14 @@ import {
   ImageBackground,
   Animated,
 } from "react-native";
-import React, { useRef, useEffect } from "react";
+import Icon from "react-native-vector-icons/FontAwesome";
 import { Formik } from "formik";
 import * as Yup from "yup";
 import { useRouter } from "expo-router";
 import { useMutation } from "@tanstack/react-query";
 import { loginUser } from "../(services)/api/api";
 import { loginUserAction } from "../(redux)/authSlice";
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 
 const validationSchema = Yup.object().shape({
   email: Yup.string()
@@ -30,33 +31,32 @@ const validationSchema = Yup.object().shape({
 
 const Login = () => {
   const router = useRouter();
-  const scrollAnim = useRef(new Animated.Value(0)).current; // Scrolling animation value
+  const scrollAnim = useRef(new Animated.Value(0)).current;
   const mutation = useMutation({
     mutationFn: loginUser,
     mutationKey: ["login"],
   });
   const dispatch = useDispatch();
-  useSelector((state) => console.log("Store Data", state));
+  const [showPassword, setShowPassword] = useState(false);
 
   useEffect(() => {
     if (mutation?.isLoading) {
-      // Start the scrolling animation when loading begins
       Animated.loop(
         Animated.sequence([
           Animated.timing(scrollAnim, {
-            toValue: 10, // Move the button a little to the right
+            toValue: 10,
             duration: 500,
             useNativeDriver: true,
           }),
           Animated.timing(scrollAnim, {
-            toValue: -10, // Move the button a little to the left
+            toValue: -10,
             duration: 500,
             useNativeDriver: true,
           }),
         ])
       ).start();
     } else {
-      scrollAnim.setValue(0); // Reset the button position after loading finishes
+      scrollAnim.setValue(0);
     }
   }, [mutation?.isLoading]);
 
@@ -71,7 +71,6 @@ const Login = () => {
       <View style={styles.overlay}>
         <Text style={styles.title}>Login</Text>
 
-        {/* Show error message if the mutation fails */}
         {mutation?.isError && (
           <Text style={styles.errorText}>
             {mutation?.error?.response?.data?.message || "Invalid credentials"}
@@ -87,12 +86,10 @@ const Login = () => {
             mutation
               .mutateAsync(values)
               .then((data) => {
-                // Handle successful login response
                 dispatch(loginUserAction(data));
-                router.push("/(tabs)"); // Navigate to the dashboard or another screen
+                router.push("/(tabs)");
               })
               .catch((error) => {
-                // Handle error during the mutation
                 console.error("Login failed:", error);
               });
           }}
@@ -120,15 +117,27 @@ const Login = () => {
                 <Text style={styles.errorText}>{errors.email}</Text>
               )}
 
-              <TextInput
-                style={styles.input}
-                placeholder="Password"
-                onChangeText={handleChange("password")}
-                onBlur={handleBlur("password")}
-                value={values.password}
-                secureTextEntry
-                placeholderTextColor="#888"
-              />
+              <View style={styles.passwordContainer}>
+                <TextInput
+                  style={styles.passwordInput}
+                  placeholder="Password"
+                  onChangeText={handleChange("password")}
+                  onBlur={handleBlur("password")}
+                  value={values.password}
+                  secureTextEntry={!showPassword}
+                  placeholderTextColor="#888"
+                />
+                <TouchableOpacity
+                  style={styles.eyeIcon}
+                  onPress={() => setShowPassword(!showPassword)}
+                >
+                  <Icon
+                    name={showPassword ? "eye" : "eye-slash"}
+                    size={20}
+                    color="#888"
+                  />
+                </TouchableOpacity>
+              </View>
               {errors.password && touched.password && (
                 <Text style={styles.errorText}>{errors.password}</Text>
               )}
@@ -170,21 +179,21 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
     padding: 16,
-    backgroundColor: "rgba(0, 0, 0, 0.5)", // Dark overlay for readability
+    backgroundColor: "rgba(0, 0, 0, 0.5)",
     width: "100%",
   },
   title: {
     fontSize: 32,
     fontWeight: "bold",
     marginBottom: 32,
-    color: "#fff", // White text for contrast
+    color: "#fff",
     textAlign: "center",
   },
   form: {
     width: "100%",
     maxWidth: 400,
     padding: 16,
-    backgroundColor: "rgba(255, 255, 255, 0.9)", // Slightly transparent form background
+    backgroundColor: "rgba(255, 255, 255, 0.9)",
     borderRadius: 12,
     elevation: 4,
   },
@@ -199,6 +208,25 @@ const styles = StyleSheet.create({
     fontSize: 16,
     color: "#333",
     elevation: 2,
+  },
+  passwordContainer: {
+    flexDirection: "row",
+    alignItems: "center",
+    borderColor: "#ddd",
+    borderWidth: 1,
+    borderRadius: 10,
+    backgroundColor: "#fafafa",
+    marginBottom: 16,
+  },
+  passwordInput: {
+    flex: 1,
+    height: 50,
+    paddingHorizontal: 16,
+    fontSize: 16,
+    color: "#333",
+  },
+  eyeIcon: {
+    paddingHorizontal: 10,
   },
   errorText: {
     color: "red",
