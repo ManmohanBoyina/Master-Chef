@@ -106,7 +106,7 @@ const Settings = () => {
             onPress={() => setModalVisible(true)}
           >
             <Icon name="lock" size={24} color="#f44336" />
-            <Text style={styles.optionText}>Payment</Text>
+            <Text style={styles.optionText}>Donate</Text>
             <Icon name="angle-right" size={24} color="#999" style={styles.optionIcon} />
           </TouchableOpacity>
 
