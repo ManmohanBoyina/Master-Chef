@@ -72,8 +72,9 @@ const Settings = () => {
 
   const handleLogout = async () => {
     await dispatch(logoutUserAction());
-    router.replace("/auth/login");
+    router.replace("/auth/login"); // Navigate to login screen immediately after logout
   };
+  
 
   // Function to download the image
   const downloadImage = async () => {
