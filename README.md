@@ -20,7 +20,7 @@
 </ul>
 
 <h2>🛠️ Installation</h2>
-<h2>🔧 Configuration</h2> <p>Before running the app, make sure to set up the <code>config.js</code> file to define the API endpoint for fetching recipes.</p> <h3>Setup Instructions</h3>
+<h2>🔧 Configuration</h2> <p>Before running the app, make sure to modify the hosted backend URL in <code>config.js</code> file to define the API endpoint for logging in into the app and fetching recipes.</p> <h3>Setup Instructions</h3>
 <pre>
 git clone https://github.com/ManmohanBoyina/master-chef.git
 cd Master-chef
