@@ -8,6 +8,7 @@ import {
   Modal,
   Image,
   Alert,
+  TextInput,
 } from "react-native";
 import Icon from "react-native-vector-icons/FontAwesome";
 import * as FileSystem from "expo-file-system";
@@ -18,15 +19,22 @@ import { logoutUserAction } from "../(redux)/authSlice";
 import { useRouter } from "expo-router";
 import ProtectedRoute from "../../components/ProtectedRoute";
 import { useNavigation } from "expo-router";
-import { requestNotificationPermission, scheduleRandomNotifications, cancelNotifications } from "../services/Notification";
+import {
+  requestNotificationPermission,
+  scheduleRandomNotifications,
+  cancelNotifications,
+} from "../services/Notification";
 import { useStripe } from "@stripe/stripe-react-native";
-
+import config from "../../config";
 const Settings = () => {
   const dispatch = useDispatch();
   const router = useRouter();
   const Navigation = useNavigation();
   const [isNotificationsEnabled, setIsNotificationsEnabled] = useState(false);
   const [isModalVisible, setModalVisible] = useState(false);
+  const [isRateModalVisible, setRateModalVisible] = useState(false);
+  const [rating, setRating] = useState(0);
+  const [comment, setComment] = useState("");
   const stripe = useStripe();
 
   const handleToggleNotifications = async () => {
@@ -42,41 +50,11 @@ const Settings = () => {
     }
   };
 
-  const subscribe = async () => {
-    try {
-      // sending request
-      const response = await fetch("http://localhost:8080/pay", {
-        method: "POST",
-        body: JSON.stringify({ name }),
-        headers: {
-          "Content-Type": "application/json",
-        },
-      });
-      const data = await response.json();
-      if (!response.ok) return Alert.alert(data.message);
-      const clientSecret = data.clientSecret;
-      const initSheet = await stripe.initPaymentSheet({
-        paymentIntentClientSecret: clientSecret,
-      });
-      if (initSheet.error) return Alert.alert(initSheet.error.message);
-      const presentSheet = await stripe.presentPaymentSheet({
-        clientSecret,
-      });
-      if (presentSheet.error) return Alert.alert(presentSheet.error.message);
-      Alert.alert("Payment complete, thank you!");
-    } catch (err) {
-      console.error(err);
-      Alert.alert("Something went wrong, try again later!");
-    }
-  };
-
   const handleLogout = async () => {
     await dispatch(logoutUserAction());
-    router.replace("/auth/login"); // Navigate to login screen immediately after logout
+    router.replace("/auth/login");
   };
-  
 
-  // Function to download the image
   const downloadImage = async () => {
     const asset = Asset.fromModule(require("../../assets/Payment.jpg"));
 
@@ -86,7 +64,10 @@ const Settings = () => {
 
       const { status } = await MediaLibrary.requestPermissionsAsync();
       if (status !== "granted") {
-        Alert.alert("Permission required", "You need to enable media permissions to download images.");
+        Alert.alert(
+          "Permission required",
+          "You need to enable media permissions to download images."
+        );
         return;
       }
 
@@ -104,6 +85,50 @@ const Settings = () => {
     }
   };
 
+  const submitRating = async () => {
+    if (rating === 0) {
+      Alert.alert("Error", "Please select a star rating.");
+      return;
+    }
+  
+    try {
+      if (!config.API_URL) {
+        throw new Error("API URL is not defined in config.");
+      }
+  
+      const response = await fetch(`${config.API_URL}/api/ratings/ratings`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ rating, comment }),
+      });
+  
+      // Log raw response for debugging
+      const rawResponse = await response.text();
+      console.log("Raw server response:", rawResponse);
+  
+      if (response.ok) {
+        Alert.alert("Thank you!", "Your feedback has been submitted.");
+        setRating(0);
+        setComment("");
+        setRateModalVisible(false);
+      } else {
+        Alert.alert("Error", "Failed to submit feedback.");
+      }
+    } catch (error) {
+      console.error("Error submitting feedback:", error.message);
+      Alert.alert(
+        "Error",
+        error.message.includes("Network")
+          ? "Network error: Unable to reach the server. Check your connection."
+          : "An error occurred. Please try again later."
+      );
+    }
+  };  
+  
+  
+
   return (
     <ProtectedRoute>
       <View style={styles.container}>
@@ -115,7 +140,12 @@ const Settings = () => {
           >
             <Icon name="user" size={24} color="#4caf50" />
             <Text style={styles.optionText}>Account</Text>
-            <Icon name="angle-right" size={24} color="#999" style={styles.optionIcon} />
+            <Icon
+              name="angle-right"
+              size={24}
+              color="#999"
+              style={styles.optionIcon}
+            />
           </TouchableOpacity>
 
           <View style={styles.option}>
@@ -131,30 +161,106 @@ const Settings = () => {
             />
           </View>
 
-          {/* Payment Button to Open Image Modal */}
+          <TouchableOpacity
+            style={styles.option}
+            onPress={() => setRateModalVisible(true)}
+          >
+            <Icon name="star" size={24} color="#FFD700" />
+            <Text style={styles.optionText}>Rate Us</Text>
+            <Icon
+              name="angle-right"
+              size={24}
+              color="#999"
+              style={styles.optionIcon}
+            />
+          </TouchableOpacity>
+
           <TouchableOpacity
             style={styles.option}
             onPress={() => setModalVisible(true)}
           >
             <Icon name="lock" size={24} color="#f44336" />
             <Text style={styles.optionText}>Donate</Text>
-            <Icon name="angle-right" size={24} color="#999" style={styles.optionIcon} />
+            <Icon
+              name="angle-right"
+              size={24}
+              color="#999"
+              style={styles.optionIcon}
+            />
           </TouchableOpacity>
 
-          <TouchableOpacity style={styles.option} onPress={() => Navigation.navigate("Screens/About")}>
+          <TouchableOpacity
+            style={styles.option}
+            onPress={() => Navigation.navigate("Screens/About")}
+          >
             <Icon name="info-circle" size={24} color="#3f51b5" />
             <Text style={styles.optionText}>About</Text>
-            <Icon name="angle-right" size={24} color="#999" style={styles.optionIcon} />
+            <Icon
+              name="angle-right"
+              size={24}
+              color="#999"
+              style={styles.optionIcon}
+            />
           </TouchableOpacity>
 
           <TouchableOpacity style={styles.option} onPress={handleLogout}>
             <Icon name="sign-out" size={24} color="#e91e63" />
             <Text style={styles.optionText}>Logout</Text>
-            <Icon name="angle-right" size={24} color="#999" style={styles.optionIcon} />
+            <Icon
+              name="angle-right"
+              size={24}
+              color="#999"
+              style={styles.optionIcon}
+            />
           </TouchableOpacity>
         </View>
 
-        {/* Modal to Show Image */}
+        {/* Rate Us Modal */}
+        <Modal
+          visible={isRateModalVisible}
+          animationType="slide"
+          transparent={true}
+        >
+          <View style={styles.modalContainer}>
+            <View style={styles.modalContent}>
+              {/* Close Button at Top Right Corner */}
+              <TouchableOpacity
+                style={styles.closeButtonTopRight}
+                onPress={() => setRateModalVisible(false)}
+              >
+                <Icon name="close" size={24} color="#333" />
+              </TouchableOpacity>
+
+              <Text style={styles.modalText}>Rate Us</Text>
+              <View style={styles.starsContainer}>
+                {[1, 2, 3, 4, 5].map((star) => (
+                  <TouchableOpacity key={star} onPress={() => setRating(star)}>
+                    <Icon
+                      name="star"
+                      size={30}
+                      color={rating >= star ? "#FFD700" : "#ccc"}
+                      style={styles.star}
+                    />
+                  </TouchableOpacity>
+                ))}
+              </View>
+              <TextInput
+                style={styles.commentInput}
+                placeholder="Leave a comment..."
+                value={comment}
+                onChangeText={setComment}
+              />
+              <TouchableOpacity
+                style={styles.submitButton}
+                onPress={submitRating}
+              >
+                <Text style={styles.submitButtonText}>Submit</Text>
+              </TouchableOpacity>
+            </View>
+          </View>
+        </Modal>
+
+        {/* Donate Modal */}
         <Modal
           visible={isModalVisible}
           animationType="slide"
@@ -162,16 +268,24 @@ const Settings = () => {
         >
           <View style={styles.modalContainer}>
             <View style={styles.modalContent}>
-              <TouchableOpacity style={styles.closeButton} onPress={() => setModalVisible(false)}>
+              <TouchableOpacity
+                style={styles.closeButton}
+                onPress={() => setModalVisible(false)}
+              >
                 <Icon name="close" size={24} color="#333" />
               </TouchableOpacity>
-              <Text style={styles.modalText}>Donate to help us maintain the app</Text>
+              <Text style={styles.modalText}>
+                Donate to help us maintain the app
+              </Text>
               <Image
                 source={require("../../assets/Payment.jpg")}
                 style={styles.image}
                 resizeMode="contain"
               />
-              <TouchableOpacity style={styles.downloadButton} onPress={downloadImage}>
+              <TouchableOpacity
+                style={styles.downloadButton}
+                onPress={downloadImage}
+              >
                 <Text style={styles.downloadText}>Download Image</Text>
               </TouchableOpacity>
             </View>
@@ -246,9 +360,43 @@ const styles = StyleSheet.create({
     textAlign: "center",
     color: "#333",
   },
+  starsContainer: {
+    flexDirection: "row",
+    justifyContent: "center",
+    marginBottom: 20,
+    paddingVertical: 10, // Additional spacing for alignment
+  },
+  star: {
+    fontSize: 40, // Adjusted size for larger stars
+    marginHorizontal: 10, // Space between stars
+  },
+  commentInput: {
+    height: 80,
+    borderColor: "#ddd",
+    borderWidth: 1,
+    borderRadius: 5,
+    padding: 10,
+    textAlignVertical: "top",
+    marginBottom: 20,
+    width: "100%",
+    backgroundColor: "#f9f9f9",
+  },
+  submitButton: {
+    backgroundColor: "#05B681",
+    paddingVertical: 12,
+    borderRadius: 8,
+    width: "100%",
+    alignItems: "center",
+    marginBottom: 10,
+  },
+  submitButtonText: {
+    color: "#fff",
+    fontSize: 16,
+    fontWeight: "bold",
+  },
   image: {
-    width: "200%",
-    height: 330, // Larger image size
+    width: "100%",
+    height: 300,
     marginVertical: 10,
   },
   downloadButton: {
@@ -262,5 +410,11 @@ const styles = StyleSheet.create({
     color: "#fff",
     fontSize: 16,
     fontWeight: "bold",
+  },
+  closeButtonTopRight: {
+    position: "absolute", // Position relative to the modal
+    top: 10, // 10px from the top
+    right: 10, // 10px from the right
+    zIndex: 10, // Ensure it stays above other components
   },
 });
