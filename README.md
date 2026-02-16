@@ -39,7 +39,7 @@ npm expo start
 
 <h2>📸 Screenshots</h2>
 <p align="center">
-  <img src="tite_image.jpg" alt="Screen 2" width="120" />
+  <img src="login_image.jpg" alt="Screen 2" width="120" />
   <img src="register_image.jpg" alt="Screen 1" width="120" />
   <img src="home_screen.jpg" alt="Screen 3" width="120" />
   <img src="title_image.jpg" alt="Screen 4" width="120" />
