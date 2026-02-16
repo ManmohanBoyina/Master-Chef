@@ -41,8 +41,8 @@ npm expo start
 <p align="center">
   <img src="tite_image.jpg" alt="Screen 2" width="120" />
   <img src="register_image.jpg" alt="Screen 1" width="120" />
-  <img src="home_screen" alt="Screen 3" width="120" />
-  <img src="photo_2024-10-30_19-48-28.jpg" alt="Screen 4" width="120" />
-  <img src="photo_2024-10-30_19-48-33.jpg" alt="Screen 5" width="120" />
-  <img src="photo_2024-10-30_19-48-36.jpg" alt="Screen 6" width="120" />
+  <img src="home_screen.jpg" alt="Screen 3" width="120" />
+  <img src="title_image.jpg" alt="Screen 4" width="120" />
+  <img src="settings.jpg" alt="Screen 5" width="120" />
+  <img src="bookmarked_page.jpg" alt="Screen 6" width="120" />
 </p>
